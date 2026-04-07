@@ -14,44 +14,25 @@ Our primary testbed is the **2D Hénon-Heiles System**, a classic model for Hami
 
 ---
 
-## 📂 Repository Structure
+## Experimental Methodology & Physics Diagnosis
 
-The codebase is organized into the following main directories:
+Our research was conducted in progressive stages, starting from a simple baseline and scaling up to chaotic environments. Instead of blindly tuning hyperparameters, our experiments focused on **opening the black box of network architectures** to understand how physical gradients flow through different activation layers.
 
-* `NLoscillator/`: 1D Non-Linear Oscillator baseline models. Used for initial testing of custom activation functions.
-* `HHsystem/`: Core implementation for the 2D Hénon-Heiles chaotic system.
-  * `HamiltonianNet_HenonHeiles.py`: The main HNN model definition and training loop.
-  * `utils_HHsystem.py`: Utilities for data generation (Euler methods) and visualization.
-  * `data/`: Generated ground truth phase space data $(x, y, p_x, p_y)$. Includes standard Euler data (`Euler10`, `Euler200`).
-* `experiment/`: Comprehensive logs, loss curves, and trajectory plots from our ablation studies on various activation layers (e.g., AdaptiveSin, Gabor, DualSin, GELU, Tanh).
+### Phase 1: Proof of Concept on 1D Non-Linear Oscillator
+Before tackling chaos, we first evaluated the network's foundational capacity on a simpler 1D non-linear oscillator.
+* **Objective:** Compare standard deep learning activation functions (e.g., `GELU`, `Tanh`) against periodic/physics-informed activations (e.g., `AdaptiveSin`, `Snake`, baseline `mySin`).
+* **Insight:** Traditional activation functions commonly used in CV/NLP performed poorly in learning conservative dynamics. However, adaptive and purely periodic functions (`AdaptiveSin`, `mySin`) demonstrated superior performance. This confirmed our initial hypothesis: **global periodicity and smooth bounded derivatives are essential for modeling conservative physical fields.**
 
+### Phase 2: Scaling to the 2D Chaotic Hénon-Heiles System
+Equipped with the insights from Phase 1, we scaled our model to the highly complex, 2D chaotic Hénon-Heiles system. Here, the challenge lies in the non-linear coupling terms that cause unpredictable chaotic trajectories. We conducted extensive ablation studies by designing custom, highly interpretable activation functions to see if structural priors could help the network:
+* **Learnable Polynomials:** We designed a 3rd-order polynomial activation to perfectly match the theoretical HH potential equation. 
+  * *Diagnosis:* This caused catastrophic gradient explosions. The composition of polynomials in a deep MLP expands the order exponentially, leading to numerical instability when computing physical forces via backpropagation.
+* **Gabor Wavelets (Localized Resonances):** We utilized a Gaussian envelope multiplied by a sine wave to capture the system's local transient resonances.
+  * *Diagnosis:* The network forced the Gaussian envelope to become extremely narrow, causing "tunnel vision" (dead gradients) at the high-energy edges of the phase space, failing to capture global chaotic movements.
+* **Dual Adaptive Sine:** We introduced multiple learnable frequencies aiming to capture the beat frequencies of the non-linear coupling.
+  * *Diagnosis:* The network naturally decayed the weight of the secondary frequency, collapsing back into a single dominant frequency.
 ---
 
-## 🔬 Core Experiments & Ablation Studies (The Physics Diagnosis)
-
-A major focus of our initial research was investigating the effect of different **Activation Functions** on computing physical gradients (force fields) in deep multi-layer perceptrons (MLPs).
-
-Since the HNN must compute higher-order derivatives of the network's output to calculate physical forces, the mathematical properties of the activation function are critical. We conducted extensive ablation studies with the following findings:
-
-1. **The Baseline Champion (Global Sine):** A simple, global `sin(x)` function serves as the optimal baseline (Loss ~ $9.3 \times 10^{-6}$). Its infinite smoothness, global periodicity, and perfectly bounded derivatives make it ideal for maintaining stable gradient flows across the complex chaotic phase space.
-2. **The Pitfall of Polynomials (Learnable Polynomial):** We attempted to use a 3rd-order learnable polynomial to explicitly match the HH potential formula. However, this resulted in massive **gradient explosions** (Loss $\to 6 \times 10^8$). The composition of functions in a deep MLP expands the polynomial order exponentially, causing the chain rule to generate numerically unstable gradients.
-3. **The Tunnel Vision of Wavelets (Gabor Activation):** We introduced a Gabor wavelet ($e^{-\gamma x^2}\sin(ax)$) to capture localized transient resonances. However, during long-time chaotic predictions, the network learned an excessively large $\gamma$ ($\approx 3.01$), shrinking the receptive field and causing **dead gradients** ("tunnel vision") at the high-energy edges of the phase space.
-4. **Frequency Collapse (Dual Adaptive Sin):**
-   When explicitly providing two learnable frequencies to capture the non-linear coupling, the network heavily decayed the weight of one frequency, effectively collapsing back to a single frequency optimal for the current energy state.
-
-**Conclusion on Architecture:** In the context of deep MLPs modeling conservative vector fields, trying to enforce structural complexity into the activation layer is sub-optimal. *Simplicity and bounded derivatives (like `sin`) are key.*
-
----
-
-## 🚀 Next Steps: Physics-Informed Constraints
-
-Having optimized the network architecture, our current focus is addressing the remaining divergence in long-time predictions ($t \to \infty$) near the strong chaotic regime ($E \ge 1/6$).
-
-We are currently implementing the following improvements:
-1. **Energy Penalty in Loss Function**: Introducing a strict physical constraint term: $Loss_{energy} = \lambda \cdot MSE(\mathcal{H}_{pred} - E_{initial})$. This will forcefully penalize any energy drift during the network's trajectory rollout.
-2. **Symplectic Integrators**: Replacing the standard Euler method data generators with Symplectic Integrators (e.g., Leapfrog) to ensure the training ground truth itself is strictly energy-conserved.
-
----
 
 ## ⚙️ How to Run
 
@@ -74,4 +55,3 @@ We are currently implementing the following improvements:
 
 ---
 *Disclaimer: This project builds upon the theoretical framework of [Hamiltonian Neural Networks (Greydanus et al., 2019)] and specific implementations from [Mattheakis et al. (Phys. Rev. E, 2022)].*
-```
