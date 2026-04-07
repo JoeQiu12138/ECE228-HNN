@@ -33,9 +33,58 @@ class mySin(torch.nn.Module):
     @staticmethod
     def forward(input):
         return torch.sin(input)
-   
     
-   #####################################
+# 1. 定义 AdaptiveSin 激活函数 (替换原有的 mySin)
+class AdaptiveSin(torch.nn.Module):
+    def __init__(self):
+        super(AdaptiveSin, self).__init__()
+        # 初始化频率参数 a 为 1.0
+        self.a = torch.nn.Parameter(torch.tensor(1.0))
+        
+    def forward(self, input):
+        return torch.sin(self.a * input)
+
+class DualAdaptiveSin(torch.nn.Module):
+    def __init__(self):
+        super(DualAdaptiveSin, self).__init__()
+        # 初始化两个不同的频率，一个慢频，一个快频
+        self.a1 = torch.nn.Parameter(torch.tensor(0.5))
+        self.a2 = torch.nn.Parameter(torch.tensor(1.5))
+        # 初始权重均分
+        self.w1 = torch.nn.Parameter(torch.tensor(0.5))
+        self.w2 = torch.nn.Parameter(torch.tensor(0.5))
+        
+    def forward(self, input):
+        # 用两套频率去捕捉混沌的复杂性
+        return self.w1 * torch.sin(self.a1 * input) + self.w2 * torch.sin(self.a2 * input)
+   
+class LearnablePolynomial(torch.nn.Module):
+    def __init__(self):
+        super(LearnablePolynomial, self).__init__()
+        # c1 初始化为 1.0，类似于传统的线性透传
+        self.c1 = torch.nn.Parameter(torch.tensor(1.0))
+        # c2, c3 初始化为接近 0 的小值，防止训练初期梯度爆炸
+        # 让网络根据 HH 系统的物理反馈自己去学习非线性强度
+        self.c2 = torch.nn.Parameter(torch.tensor(1e-4)) 
+        self.c3 = torch.nn.Parameter(torch.tensor(1e-4))
+        
+    def forward(self, x):
+        # f(x) = c1*x + c2*x^2 + c3*x^3
+        return self.c1 * x + self.c2 * torch.pow(x, 2) + self.c3 * torch.pow(x, 3)
+
+class GaborActivation(torch.nn.Module):
+    def __init__(self):
+        super(GaborActivation, self).__init__()
+        # gamma 控制局部记忆窗口的大小，初始化为较小的值让窗口大一点
+        self.gamma = torch.nn.Parameter(torch.tensor(0.1))
+        # a 控制局部振荡频率，初始化为接近 1.0
+        self.a = torch.nn.Parameter(torch.tensor(1.0))
+        
+    def forward(self, x):
+        x2 = x * x 
+        return torch.exp(-self.gamma * x2) * torch.sin(self.a * x)
+        
+#####################################
 # Hamiltonian Neural Network (HNN) class
 ####################################
 
@@ -117,7 +166,11 @@ class odeNet_HH_MM(torch.nn.Module):
 
         # Define the Activation
 #         self.actF = torch.nn.Sigmoid()   
-        self.actF = mySin()
+        #self.actF = mySin()
+        #self.actF = AdaptiveSin()
+        #self.actF = DualAdaptiveSin()
+        #self.actF = LearnablePolynomial()
+        self.actF = GaborActivation()
         
         # define layers
         self.Lin_1   = torch.nn.Linear(1, D_hid)
@@ -267,22 +320,47 @@ X0 = [t0, x0, y0, px0, py0, lam]
 # Run first a short time prediction. 
 # Then load the model and train for longer time
 
-# ## SHORT TIME
-# t_max, N =  6*np.pi, 500; 
-# print(t_max * 0.069, ' Lyapunov times prediction'); dt = t_max/N; 
-# n_train, neurons, epochs, lr = N, 80, int(2e4 ), 8e-3
-# trainModel(X0, t_max, neurons, epochs, n_train, lr,  loadWeights=False, minLoss=1e-8, showLoss=True)
+# =========================================================
+# 【阶段 1：跑这段时，下面的阶段 2 必须注释掉】
+# =========================================================
+## SHORT TIME
+#print("\n>>>  Short Time ...")
+#t_max, N =  6*np.pi, 500; 
+#print(t_max * 0.069, ' Lyapunov times prediction'); dt = t_max/N; 
+#n_train, neurons, epochs, lr = N, 80, int(2e4 ), 8e-3
+# 注意：这里的 loadWeights=False，表示从零开始训练
+#trainModel(X0, t_max, neurons, epochs, n_train, lr,  loadWeights=False, minLoss=1e-8, showLoss=True)
+
+# 加载模型并打印 a 看看
+#model = loadModel()
+#print("=== LearnablePolynomial learning result ===")
+#print(f" c1 = {model.actF.c1.item():.6f}")
+#print(f" c2 = {model.actF.c2.item():.6f}")
+#print(f"c3 = {model.actF.c3.item():.6f}")
+#GaborActivation
+#print("=== GaborActivation learning result ===")
+#print(f" gamma = {model.actF.gamma.item():.6f}")
+#print(f" a = {model.actF.a.item():.6f}")
+# =========================================================
+# =========================================================
 
 
-## LONG TIME: use loadWeights=True
+# =========================================================
+# 【阶段 2：跑阶段 1 时，这段全部加上 # 注释掉】
+# =========================================================
+# ## LONG TIME: use loadWeights=True
+print("\n>>>  Long Time ...")
 t_max, N =  12*np.pi, 500; 
 print(t_max * 0.069, ' Lyapunov times prediction'); dt = t_max/N; 
 n_train, neurons, epochs, lr = N, 80, int(5e4 ), 5e-3
-# TRAIN THE NETWORK. 
+# # TRAIN THE NETWORK. 
 trainModel(X0, t_max, neurons, epochs, n_train, lr,  loadWeights=True, minLoss=1e-8, showLoss=True)
-
+# 
 model = loadModel()
-
+print("=== GaborActivation learning result ===")
+print(f" gamma = {model.actF.gamma.item():.6f}")
+print(f" a = {model.actF.a.item():.6f}")
+# =========================================================
 
 
 #####################################

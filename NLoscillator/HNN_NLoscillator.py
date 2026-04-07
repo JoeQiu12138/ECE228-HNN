@@ -37,6 +37,30 @@ class mySin(torch.nn.Module):
     def forward(input):
         return torch.sin(input)
 
+class Snake(torch.nn.Module):
+    def __init__(self):
+        super(Snake, self).__init__()
+        # 定义一个可学习的参数 'a'，让神经网络自己去寻找最优的物理频率
+        self.a = torch.nn.Parameter(torch.tensor(1.0))
+        
+    def forward(self, x):
+        return x + (1.0 / self.a) * torch.pow(torch.sin(self.a * x), 2)
+
+class AdaptiveSin(torch.nn.Module):
+    def __init__(self):
+        super(AdaptiveSin, self).__init__()
+        # 定义一个可学习的参数 'a'，初始值设为 1.0
+        self.a = torch.nn.Parameter(torch.tensor(1.0)) 
+        
+    def forward(self, x):
+        # 相当于网络自动寻找最优的物理振动频率
+        return torch.sin(self.a * x)
+
+class Gaussian(torch.nn.Module):
+    def forward(self, x):
+        return torch.exp(-torch.pow(x, 2))
+
+
 #####################################
 # Hamiltonian Neural Network (HNN) class
 ####################################
@@ -98,8 +122,15 @@ class odeNet_NLosc_MM(torch.nn.Module):
         super(odeNet_NLosc_MM,self).__init__()
 
 #####    CHOOCE THE ACTIVATION FUNCTION
-        self.actF = mySin()
-        # self.actF = torch.nn.Sigmoid()   
+        
+        #self.actF = mySin()
+        #self.actF = torch.nn.Sigmoid() 
+        #self.actF = Snake()  
+        #self.actF = torch.nn.GELU()
+        #self.actF = torch.nn.Tanh()
+        #self.actF = torch.nn.SiLU()
+        self.actF = AdaptiveSin()
+        #self.actF = Gaussian()
 
 # define layers
         self.Lin_1   = torch.nn.Linear(1, D_hid)
@@ -428,6 +459,8 @@ plt.ylabel('$\delta_p$');plt.xlabel('t')
 
 
 plt.savefig('nonlinearOscillator_error.png')
+
+print("a =", model.actF.a.item())
 
 
 
