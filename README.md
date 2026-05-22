@@ -14,6 +14,19 @@ Our primary testbed is the **2D Hénon-Heiles System**, a classic model for Hami
 
 ---
 
+## Repository layout
+
+```
+ECE228-HNN/
+├── src/           # Phase 1–3 source code
+├── exp_data/      # experiment outputs (1D/, HH/)
+└── reference/     # PDF papers and lecture notes
+```
+
+See [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+---
+
 ## Experimental Methodology & Physics Diagnosis
 
 Our research was conducted in progressive stages, starting from a simple baseline and scaling up to chaotic environments. Instead of blindly tuning hyperparameters, our experiments focused on **opening the black box of network architectures** to understand how physical gradients flow through different activation layers.
@@ -42,7 +55,7 @@ Before tackling chaos, we first evaluated the network's foundational capacity on
 | --- | ---: | ---: | ---: | ---: | ---: |
 | 1D nonlinear oscillator, current saved model | $1.28\times10^{-4}$ | $6.39\times10^{-3}$ | $1.92\times10^{-3}$ | $4.11\times10^{-3}$ | $1.03\times10^{-3}$ |
 
-Additional activation-specific figures are stored under `experiment/1D/`. The folder currently named `tahn/` corresponds to the `Tanh` activation and should be referred to as `Tanh` in the final report.
+Additional activation-specific figures are stored under `exp_data/1D/`. Figures for `Tanh` are under `exp_data/1D/tanh/`.
 
 ### Phase 2: Scaling to the 2D Chaotic Hénon-Heiles System
 Equipped with the insights from Phase 1, we scaled our model to the highly complex, 2D chaotic Hénon-Heiles system. Here, the challenge lies in the non-linear coupling terms that cause unpredictable chaotic trajectories. We conducted extensive ablation studies by designing custom, highly interpretable activation functions to see if structural priors could help the network:
@@ -73,21 +86,23 @@ Equipped with the insights from Phase 1, we scaled our model to the highly compl
 
 | Run | Final training loss | Max trajectory error | Mean trajectory error | Max energy drift | Mean energy drift |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HH system, current saved model | $8.79\times10^{-4}$ | $1.44\times10^{-3}$ | $3.89\times10^{-4}$ | $6.02\times10^{-4}$ | $1.75\times10^{-4}$ |
+| HH system, current saved model (GaborActivation, long) | $8.79\times10^{-4}$ | $1.44\times10^{-3}$ | $3.89\times10^{-4}$ | $6.02\times10^{-4}$ | $1.75\times10^{-4}$ |
+
+**Full HH activation comparison table (all ablations):** see [`src/Phase2/HHsystem/results/hh_activation_comparison.md`](src/Phase2/HHsystem/results/hh_activation_comparison.md). Regenerate with `python3 hh_train_eval.py` from `src/Phase2/HHsystem/` (see [`src/Phase2/HHsystem/README.md`](src/Phase2/HHsystem/README.md) and [`WORKFLOW.md`](src/Phase2/HHsystem/WORKFLOW.md)).
 
 **Activation ablation artifact map.**
 
 | System | Activation / variant | Available artifacts | Interpretation to use in report |
 | --- | --- | --- | --- |
-| 1D oscillator | `mySin` baseline | `experiment/1D/baseline/` | Periodic baseline for conservative dynamics |
-| 1D oscillator | `AdaptiveSin` | `experiment/1D/adaptiveSin/` | Learnable frequency improves the periodic inductive bias |
-| 1D oscillator | `Snake` | `experiment/1D/Snake/` | Periodic residual activation; useful comparison against pure sine |
-| 1D oscillator | `GELU` | `experiment/1D/GELU/` | Standard smooth ML activation baseline |
-| 1D oscillator | `Tanh` | `experiment/1D/tahn/` | Standard bounded activation baseline; folder name has a typo |
-| HH system | `mySin` baseline | `experiment/HH/baseline/` | Baseline HH physics-informed neural solver |
-| HH system | `AdaptiveSin` | `experiment/HH/adaptivesin/a=1 longtime/` | Single learnable-frequency periodic prior |
-| HH system | `DualAdaptiveSin` | `experiment/HH/dualSin/longtime/` | Tests whether two learnable frequencies remain useful in chaotic coupling |
-| HH system | `GaborActivation` | `experiment/HH/Gabor/short/`, `experiment/HH/Gabor/longtime/` | Localized oscillatory prior; useful for diagnosing local-vs-global dynamics |
+| 1D oscillator | `mySin` baseline | `exp_data/1D/baseline/` | Periodic baseline for conservative dynamics |
+| 1D oscillator | `AdaptiveSin` | `exp_data/1D/adaptiveSin/` | Learnable frequency improves the periodic inductive bias |
+| 1D oscillator | `Snake` | `exp_data/1D/Snake/` | Periodic residual activation; useful comparison against pure sine |
+| 1D oscillator | `GELU` | `exp_data/1D/GELU/` | Standard smooth ML activation baseline |
+| 1D oscillator | `Tanh` | `exp_data/1D/tanh/` | Standard bounded activation baseline |
+| HH system | `mySin` baseline | `exp_data/HH/baseline/` | Baseline HH physics-informed neural solver |
+| HH system | `AdaptiveSin` | `exp_data/HH/adaptivesin/a=1 longtime/` | Single learnable-frequency periodic prior |
+| HH system | `DualAdaptiveSin` | `exp_data/HH/dualSin/longtime/` | Tests whether two learnable frequencies remain useful in chaotic coupling |
+| HH system | `GaborActivation` | `exp_data/HH/Gabor/short/`, `exp_data/HH/Gabor/longtime/` | Localized oscillatory prior; useful for diagnosing local-vs-global dynamics |
 
 The current implementation switches activations manually inside the model class. For reproducible final-report runs, record the active activation, seed, rollout horizon, hidden width, epoch count, and learning rate alongside each generated figure.
 ---
@@ -101,16 +116,42 @@ The current implementation switches activations manually inside the model class.
 * NumPy
 * Matplotlib
 
-### Running the Hénon-Heiles HNN
-1. Navigate to the HH system directory:
-   ```bash
-   cd HHsystem
-   ```
-2. Run the main training script:
-   ```bash
-   python HamiltonianNet_HenonHeiles.py
-   ```
-3. The script will automatically load the initial conditions, generate the trajectory using the solver, train the HNN, and output the loss curves and trajectory comparisons as `.png` files in the same directory.
+### Phase 1 — 1D nonlinear oscillator
+
+```bash
+cd src/Phase1/NLoscillator
+python3 HNN_NLoscillator.py
+```
+
+Edit `actF` in the model class for each activation. All artifacts live under `exp_data/1D/` (figures per activation, numerics in `exp_data/1D/data/`). See [`src/Phase1/README.md`](src/Phase1/README.md), [`exp_data/1D/README.md`](exp_data/1D/README.md).
+
+### Phase 2 — Hénon–Heiles (recommended)
+
+From the repo root:
+
+```bash
+cd src/Phase2/HHsystem
+python3 hh_train_eval.py --smoke                    # CPU/CUDA sanity check
+python3 hh_train_eval.py --eval-only --device auto  # comparison table only
+python3 hh_train_eval.py --device cuda --train all
+python3 hh_train_eval.py --eval-only --golden-gabor   # optional: historical Gabor archive row
+```
+
+- **Main pipeline:** `hh_train_eval.py` (training, evaluation, table, export to `exp_data/HH/`)
+- **Shared library:** `hh_model.py`, `hh_physics_utils.py`
+- **Legacy single-activation script:** `legacy_henon_heiles_train.py` (edit `actF` and stage blocks at the bottom)
+
+Full CLI and paths: [`src/Phase2/HHsystem/README.md`](src/Phase2/HHsystem/README.md), [`src/Phase2/HHsystem/WORKFLOW.md`](src/Phase2/HHsystem/WORKFLOW.md).  
+Artifact index: [`exp_data/HH/README.md`](exp_data/HH/README.md).
+
+### Phase 2 — legacy monolithic script (optional)
+
+```bash
+cd src/Phase2/HHsystem
+python3 legacy_henon_heiles_train.py
+```
+
+Loads initial conditions, trains the HNN for the active activation, and writes loss/figures (see comments in the file for short vs long stages).
 
 ---
 *Disclaimer: This project builds upon the theoretical framework of [Hamiltonian Neural Networks (Greydanus et al., 2019)] and specific implementations from [Mattheakis et al. (Phys. Rev. E, 2022)].*

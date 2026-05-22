@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Smoke / local test artifacts
+src/Phase2/HHsystem/models/model_HH_smoke_*.zip
