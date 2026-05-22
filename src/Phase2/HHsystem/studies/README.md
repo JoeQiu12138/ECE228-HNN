@@ -1,35 +1,27 @@
-# Optional HH studies (not in main proposal)
+# HH supplementary studies
 
-Scripts here are **separate** from [`../hh_train_eval.py`](../hh_train_eval.py).  
-Use them as supplementary / report add-ons.
+Energy tiers + Poincaré at $x=0$. **Not** part of `hh_train_eval.py`. Checkpoints: `studies/models/`.
 
-| Script | Role | Outputs |
-| --- | --- | --- |
-| [`energy_tier_study.py`](energy_tier_study.py) | Train/eval low / medium / high energy | `studies/models/`, `exp_data/HH_studies/energy_tier/`, `studies/results/energy_tier_comparison.md` |
-| [`poincare_section.py`](poincare_section.py) | Poincaré section at $x=0$ | `exp_data/HH_studies/poincare/<tier>/` |
+**Table:** [`results/energy_tier_comparison.md`](results/energy_tier_comparison.md)  
+**Plots:** [`../../../exp_data/HH_studies/`](../../../exp_data/HH_studies/)  
+**Canonical HH:** [`../results/hh_activation_comparison.md`](../results/hh_activation_comparison.md)
 
-Shared helpers: [`hh_study_common.py`](hh_study_common.py) — tier IC seeds are **fixed** (`301/302/303`), not `hash()`.
+## Tiers (fixed seeds 301 / 302 / 303)
 
-## Energy tiers
+| Tier | $E$ |
+| --- | ---: |
+| `low_regular` | 0.08 |
+| `medium_baseline` | 0.12825 |
+| `high_chaotic` | 0.155 (near $1/6$) |
 
-| Tier | Target $E$ | IC seed |
-| --- | ---: | ---: |
-| `low_regular` | 0.08 | 301 |
-| `medium_baseline` | 0.12825 | 302 |
-| `high_chaotic` | 0.155 | 303 |
+## Commands
 
-`LearnablePolynomial` is skipped for tier training (unstable on HH).
+```bash
+cd src/Phase2/HHsystem/studies
+python3 energy_tier_study.py --eval-only --device auto --tier all
+python3 poincare_section.py --tier high_chaotic --activations GaborActivation mySin AdaptiveSin DualAdaptiveSin --device cuda --n-dense 12000
+```
 
-## Poincaré `--tier`
+Full retrain: `python3 energy_tier_study.py --device cuda --train all --tier all` (hours).
 
-| `--tier` | Initial condition | Checkpoints |
-| --- | --- | --- |
-| `canonical` (default) | Main HH run (`E_0\approx 0.128`) | `../models/model_HH_*_longtime.zip` |
-| `low_regular` / `medium_baseline` / `high_chaotic` | Fixed tier IC from `hh_study_common` | `studies/models/model_HH_<tier>_*_longtime.zip` |
-
-Run tier training **before** `poincare_section.py --tier high_chaotic`.
-
-## Report wording
-
-- Label as **supplementary analysis**.
-- Chaotic / high-$E$: report trajectory error + energy drift; Poincaré is qualitative only.
+Report as **supplementary**; canonical metrics stay in the main HH table.

@@ -826,27 +826,6 @@ def write_tables(rows: list[dict]) -> None:
     print(f"Wrote {md_path}")
 
 
-def write_experiment_index() -> None:
-    index = EXPERIMENT_HH / "README.md"
-    index.write_text(
-        """# exp_data/HH — artifact index
-
-| Activation | Folder | Horizon | Figures | Checkpoint |
-| --- | --- | --- | --- | --- |
-| mySin | `baseline/` | long | trajectories, error, loss | `src/Phase2/HHsystem/models/model_HH_mySin_longtime.zip` |
-| AdaptiveSin | `adaptivesin/a=1 longtime/` | long | trajectories, error, loss | `model_HH_adaptiveSin_longtime.zip` |
-| DualAdaptiveSin | `dualSin/longtime/` | long | trajectories, error, loss | `model_HH_dualSin_longtime.zip` |
-| DualAdaptiveSin | `dualSin/short/` | short | trajectories, error, loss | `model_HH_dualSin_shorttime.zip` |
-| GaborActivation | `Gabor/longtime/` | long | trajectories, error, loss | `model_HH_Gabor_longtime.zip` |
-| GaborActivation | `Gabor/short/` | short | trajectories, error, loss | `model_HH_Gabor_short_time.zip` |
-| LearnablePolynomial | `LearnablePolynomial/` | probe | loss probe only | see README (unstable) |
-
-Quantitative comparison: `src/Phase2/HHsystem/results/hh_activation_comparison.md`
-""",
-        encoding="utf-8",
-    )
-
-
 def print_runtime_estimate(short_epochs: int, long_epochs: int, n_activations: int = 2) -> None:
     """Rough CPU estimate so users know it is working, not frozen."""
     iters = n_activations * (short_epochs + long_epochs)
@@ -1026,7 +1005,6 @@ def main() -> None:
 
     print("\n>>> Writing comparison tables ...", flush=True)
     write_tables(rows)
-    write_experiment_index()
     print(">>> All done.", flush=True)
 
 

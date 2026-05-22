@@ -8,7 +8,7 @@ Usage (from src/Phase2/HHsystem/):
     3. python3 legacy_henon_heiles_train.py
 
 For multi-activation training and the comparison table, use hh_train_eval.py instead.
-See README.md and WORKFLOW.md in this directory.
+See README.md in this directory.
 """
 
 import numpy as np
