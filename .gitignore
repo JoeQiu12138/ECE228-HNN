@@ -17,3 +17,5 @@ Thumbs.db
 
 # Smoke / local test artifacts
 src/Phase2/HHsystem/models/model_HH_smoke_*.zip
+src/Phase3/coupled_oscillator/models/model_coupled_smoke_*.zip
+src/Phase2/HHsystem/studies/models/smoke_tier.zip

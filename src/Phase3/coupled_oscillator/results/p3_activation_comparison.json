@@ -1,0 +1,44 @@
+[
+  {
+    "system": "Coupled nonlinear oscillators",
+    "activation": "mySin",
+    "horizon": "long",
+    "final_train_loss": 1.450372479894213e-07,
+    "max_trajectory_error": 0.0006954201549747773,
+    "mean_trajectory_error": 0.0003427799578208059,
+    "max_energy_drift": 0.00014241039752960205,
+    "mean_energy_drift": 5.495709046954289e-05,
+    "E0": 0.22374999999999998,
+    "qualitative_outcome": "strong match to ground truth",
+    "checkpoint": "/home/rabenda/repo/ece_228/ECE228-HNN/src/Phase3/coupled_oscillator/models/model_coupled_mySin_longtime.zip",
+    "experiment_dir": "/home/rabenda/repo/ece_228/ECE228-HNN/exp_data/coupled_oscillator/baseline"
+  },
+  {
+    "system": "Coupled nonlinear oscillators",
+    "activation": "AdaptiveSin",
+    "horizon": "long",
+    "final_train_loss": 0.0037658479996025562,
+    "max_trajectory_error": 1.164839018485217,
+    "mean_trajectory_error": 0.752570522584213,
+    "max_energy_drift": 0.08044880628585815,
+    "mean_energy_drift": 0.028057564049959183,
+    "E0": 0.22374999999999998,
+    "qualitative_outcome": "visible drift or phase error",
+    "checkpoint": "/home/rabenda/repo/ece_228/ECE228-HNN/src/Phase3/coupled_oscillator/models/model_coupled_adaptiveSin_longtime.zip",
+    "experiment_dir": "/home/rabenda/repo/ece_228/ECE228-HNN/exp_data/coupled_oscillator/adaptiveSin"
+  },
+  {
+    "system": "Coupled nonlinear oscillators",
+    "activation": "GaborActivation",
+    "horizon": "long",
+    "final_train_loss": 0.015979498624801636,
+    "max_trajectory_error": 0.7192416140964565,
+    "mean_trajectory_error": 0.44553914018055335,
+    "max_energy_drift": 0.22365976870059967,
+    "mean_energy_drift": 0.13434551656246185,
+    "E0": 0.22374999999999998,
+    "qualitative_outcome": "visible drift or phase error",
+    "checkpoint": "/home/rabenda/repo/ece_228/ECE228-HNN/src/Phase3/coupled_oscillator/models/model_coupled_Gabor_longtime.zip",
+    "experiment_dir": "/home/rabenda/repo/ece_228/ECE228-HNN/exp_data/coupled_oscillator/Gabor"
+  }
+]

@@ -153,5 +153,16 @@ python3 legacy_henon_heiles_train.py
 
 Loads initial conditions, trains the HNN for the active activation, and writes loss/figures (see comments in the file for short vs long stages).
 
+### Phase 3 — Coupled oscillators (cross-system validation)
+
+```bash
+cd src/Phase3/coupled_oscillator
+python3 p3_train_eval.py --device cuda --train all
+python3 p3_train_eval.py --eval-only --device auto
+```
+
+Cross-system table: `src/Phase3/coupled_oscillator/results/phase2_vs_phase3_comparison.md`.  
+See [`src/Phase3/README.md`](src/Phase3/README.md).
+
 ---
 *Disclaimer: This project builds upon the theoretical framework of [Hamiltonian Neural Networks (Greydanus et al., 2019)] and specific implementations from [Mattheakis et al. (Phys. Rev. E, 2022)].*

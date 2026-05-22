@@ -1,0 +1,68 @@
+[
+  {
+    "system": "H\u00e9non-Heiles",
+    "activation": "mySin",
+    "horizon": "long",
+    "final_train_loss": 3.166086753481068e-05,
+    "max_trajectory_error": 0.9230019850777129,
+    "mean_trajectory_error": 0.49635033319784805,
+    "max_energy_drift": 0.005491134643554663,
+    "mean_energy_drift": 0.0011412266720533318,
+    "qualitative_outcome": "visible drift or phase error"
+  },
+  {
+    "system": "H\u00e9non-Heiles",
+    "activation": "AdaptiveSin",
+    "horizon": "long",
+    "final_train_loss": 0.019233521074056625,
+    "max_trajectory_error": 0.682061136872418,
+    "mean_trajectory_error": 0.5082643780247507,
+    "max_energy_drift": 0.12817028179258338,
+    "mean_energy_drift": 0.1190879975517081,
+    "qualitative_outcome": "visible drift or phase error"
+  },
+  {
+    "system": "H\u00e9non-Heiles",
+    "activation": "GaborActivation",
+    "horizon": "long",
+    "final_train_loss": 0.000879203318618238,
+    "max_trajectory_error": 0.0015861332451270864,
+    "mean_trajectory_error": 0.0007585487093935999,
+    "max_energy_drift": 0.0006021587848663579,
+    "mean_energy_drift": 0.00017464697170258602,
+    "qualitative_outcome": "strong match to ground truth"
+  },
+  {
+    "system": "Coupled nonlinear oscillators",
+    "activation": "mySin",
+    "horizon": "long",
+    "final_train_loss": 1.450372479894213e-07,
+    "max_trajectory_error": 0.0006954201549747773,
+    "mean_trajectory_error": 0.0003427799578208059,
+    "max_energy_drift": 0.00014241039752960205,
+    "mean_energy_drift": 5.495709046954289e-05,
+    "qualitative_outcome": "strong match to ground truth"
+  },
+  {
+    "system": "Coupled nonlinear oscillators",
+    "activation": "AdaptiveSin",
+    "horizon": "long",
+    "final_train_loss": 0.0037658479996025562,
+    "max_trajectory_error": 1.164839018485217,
+    "mean_trajectory_error": 0.752570522584213,
+    "max_energy_drift": 0.08044880628585815,
+    "mean_energy_drift": 0.028057564049959183,
+    "qualitative_outcome": "visible drift or phase error"
+  },
+  {
+    "system": "Coupled nonlinear oscillators",
+    "activation": "GaborActivation",
+    "horizon": "long",
+    "final_train_loss": 0.015979498624801636,
+    "max_trajectory_error": 0.7192416140964565,
+    "mean_trajectory_error": 0.44553914018055335,
+    "max_energy_drift": 0.22365976870059967,
+    "mean_energy_drift": 0.13434551656246185,
+    "qualitative_outcome": "visible drift or phase error"
+  }
+]

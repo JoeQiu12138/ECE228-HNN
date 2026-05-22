@@ -40,6 +40,8 @@ python3 hh_train_eval.py --device cpu --quick --train mysin-long
 
 Device notes and GPU utilization: [`WORKFLOW.md`](WORKFLOW.md).
 
+**Optional add-on studies** (not in main proposal): [`studies/README.md`](studies/README.md) — energy tiers, Poincaré sections.
+
 ---
 
 ## Scripts
@@ -151,6 +153,13 @@ models/*.zip          ──train/export──►  exp_data/HH/<activation>/
 exp_data/HH/data/   ──sync──────────►  exp_data/HH/Gabor/longtime/
 results/*.md          ◄──eval──────────  exp_data/HH/*/dx.txt
 ```
+
+---
+
+## Optional studies (proposal add-ons)
+
+Separate scripts under [`studies/`](studies/) — energy-tier comparison and Poincaré sections.  
+Artifacts: `exp_data/HH_studies/`. Does not modify `hh_train_eval.py` or main `models/`.
 
 ---
 

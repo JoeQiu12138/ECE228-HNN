@@ -5,10 +5,11 @@ ECE228-HNN/
 ├── src/                    # all source code
 │   ├── Phase1/NLoscillator/
 │   ├── Phase2/HHsystem/
-│   └── Phase3/
+│   └── Phase3/coupled_oscillator/
 ├── exp_data/               # experiment outputs (figures, txt, archives)
 │   ├── 1D/                 # Phase 1
-│   └── HH/                 # Phase 2
+│   ├── HH/                 # Phase 2
+│   └── coupled_oscillator/ # Phase 3
 └── reference/              # PDF papers and lecture notes
 ```
 
@@ -45,3 +46,13 @@ python3 HNN_NLoscillator.py
 ```
 
 Figures → `exp_data/1D/<activation>/`; numerics → `exp_data/1D/data/`.
+
+## Phase 3
+
+```bash
+cd src/Phase3/coupled_oscillator
+python3 p3_train_eval.py --device cuda --train all
+python3 p3_train_eval.py --eval-only --device auto
+```
+
+Cross-system table: `src/Phase3/coupled_oscillator/results/phase2_vs_phase3_comparison.md`
