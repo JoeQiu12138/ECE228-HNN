@@ -282,6 +282,8 @@ def main() -> None:
         "",
         f"Escape energy $E_{{esc}}=1/6\\approx{ESCAPE_E:.4f}$. Not part of main `hh_train_eval.py` table.",
         "",
+        "`medium_baseline` matches the canonical HH energy scale, but uses a tier-generated initial condition and study checkpoints. Interpret this table as sensitivity analysis, not as a reproduction of the canonical HH row.",
+        "",
         "| Tier | E_target | E0 | Activation | Final loss | Max traj err | Max E drift | Qualitative |",
         "| --- | ---: | ---: | --- | ---: | ---: | ---: | --- |",
     ]

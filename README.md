@@ -25,7 +25,7 @@ reference/                     → PDFs (incl. ece228_proposal.pdf)
 | 2 supp. | [`src/Phase2/HHsystem/studies/results/energy_tier_comparison.md`](src/Phase2/HHsystem/studies/results/energy_tier_comparison.md) |
 | 3 | [`src/Phase3/coupled_oscillator/results/phase2_vs_phase3_comparison.md`](src/Phase3/coupled_oscillator/results/phase2_vs_phase3_comparison.md) |
 
-**Headline:** HH canonical — Gabor max err **1.59e-3**; coupled system — mySin **6.95e-4**. Rankings are system-dependent.
+**Current summary:** HH canonical — Gabor max err **1.59e-3**; coupled system — mySin **6.95e-4**. Rankings are system-dependent.
 
 ---
 

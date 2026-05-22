@@ -31,7 +31,6 @@ dtype = torch.float
 
 
 def tensor_to_numpy(t: torch.Tensor) -> np.ndarray:
-    """NumPy array on host; safe for CUDA tensors."""
     return t.detach().cpu().numpy()
 
 

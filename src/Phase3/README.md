@@ -3,9 +3,9 @@
 **Question:** Do Phase 2 HH activation trends transfer to another Hamiltonian system?
 
 **Table:** [`coupled_oscillator/results/phase2_vs_phase3_comparison.md`](coupled_oscillator/results/phase2_vs_phase3_comparison.md)  
-**Artifacts:** [`../exp_data/coupled_oscillator/`](../exp_data/coupled_oscillator/)
+**Artifacts:** [`../../exp_data/coupled_oscillator/`](../../exp_data/coupled_oscillator/)
 
-**Outcome:** On HH (canonical), Gabor is strongest; on this system, **mySin** is strongest — document **conditional** transfer, not universal Gabor optimality.
+**Outcome:** In the canonical HH run, Gabor gives the best rollout among the tested activations. In the coupled oscillator run, mySin is better.
 
 ---
 

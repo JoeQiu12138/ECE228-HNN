@@ -18,11 +18,6 @@ Phase 2 uses a learnable cubic activation `f(x) = c1*x + c2*x^2 + c3*x^3` intend
 - Epochs logged: 3000
 - Diverged (loss > 1e3 or non-finite): **True**
 
-## Interpretation (for report)
-Composing learnable polynomials inside a 2-layer MLP raises effective polynomial degree when Hamiltonian residuals are differentiated through autograd. In practice the HH training loss **does not converge reliably** with this activation: gradients explode or plateau at very high loss compared to periodic activations (`mySin`, `AdaptiveSin`, `GaborActivation`).
-
-**Recommendation:** cite this folder as a negative ablation; do not use LearnablePolynomial for long-time HH rollout in the final comparison table.
-
 ## Artifacts
 - `HenonHeiles_loss_probe.png` — probe training curve
 - `../../../src/Phase2/HHsystem/models/model_HH_polynomial_probe.zip` — partial checkpoint (if saved before NaN)

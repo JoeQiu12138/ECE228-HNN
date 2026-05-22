@@ -2,6 +2,8 @@
 
 Escape energy $E_{esc}=1/6\approx0.1667$. Not part of main `hh_train_eval.py` table.
 
+`medium_baseline` matches the canonical HH energy scale, but uses a tier-generated initial condition and study checkpoints. Interpret this table as sensitivity analysis, not as a reproduction of the canonical HH row.
+
 | Tier | E_target | E0 | Activation | Final loss | Max traj err | Max E drift | Qualitative |
 | --- | ---: | ---: | --- | ---: | ---: | ---: | --- |
 | low_regular | 0.0800 | 0.0800 | mySin | 1.112e-06 | 1.767e-03 | 1.439e-04 | strong |
